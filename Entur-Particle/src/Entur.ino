@@ -120,18 +120,13 @@ void loop() {
   screen.setCursor(0, 0);
   screen.setTextColor(ST7735_BLACK);
 
-
-  // screen.setCursor(30, 3);
-  // screen.setFont(HERO_10);
-  // screen.drawPixel(screen.width()/2, screen.height()/2, ST7735_GREEN);
-
-  // screen.drawLine(0, 0, screen.width()-1, screen.height()-1, ST7735_YELLOW);
-  // screen.drawLine(screen.width()-1, 0, 0, screen.height()-1, ST7735_YELLOW);
-  // screen.drawPixel(0, screen.height()/2, ST7735_GREEN);
-
-
+  screen.setTextSize(1);
+  screen.setTextColor(ST7735_BLUE);
   screen.println("NESTE TRIKK");
+  screen.print("\n");
 
+  screen.setTextSize(2);
+  screen.setTextColor(ST7735_BLACK);
   screen.println(tempResponse);
 
   buttonState = digitalRead(buttonPin);
@@ -164,6 +159,6 @@ void loop() {
 
   }
 
-  delay(500);
+  delay(1000);
 
 }
