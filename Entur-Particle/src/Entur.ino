@@ -32,6 +32,8 @@ http_header_t headers[] = {
 http_request_t request;
 http_response_t response;
 
+String tempResponse;
+
 
 void setup() {
 
@@ -70,11 +72,11 @@ void getRealtimeEstimate() {
   Serial.println();
   Serial.println("Application>\tStart of Loop.");
   // Request path and body can be set at runtime or at setup.
-  request.hostname = "jsonplaceholder.typicode.com";
-  request.port = 80;
-  request.path = "/posts/1";
+  request.hostname = "192.168.1.117";
+  request.port = 3000;
+  request.path = "/";
 
-  https://jsonplaceholder.typicode.com/posts/1
+  // https://jsonplaceholder.typicode.com/posts/1
 
   // The library also supports sending a body with your request:
   //request.body = "{\"key\":\"value\"}";
@@ -87,6 +89,8 @@ void getRealtimeEstimate() {
   Serial.print("Application>\tHTTP Response Body: ");
   Serial.println(response.body);
 
+  tempResponse = response.body;
+
 
 }
 
@@ -96,6 +100,7 @@ void loop() {
   screen.setCursor(0, 0);
   screen.setTextColor(ST7735_BLACK);
 
+
   // screen.setCursor(30, 3);
   // screen.setFont(HERO_10);
   // screen.drawPixel(screen.width()/2, screen.height()/2, ST7735_GREEN);
@@ -104,16 +109,20 @@ void loop() {
   // screen.drawLine(screen.width()-1, 0, 0, screen.height()-1, ST7735_YELLOW);
   // screen.drawPixel(0, screen.height()/2, ST7735_GREEN);
 
-  /*
+
   screen.println("@markus testing something");
-  screen.println("17: 0 min (Trikk)");
-  screen.println("30: 1 min (Buss)");
-  */
+  // screen.println("17: 0 min (Trikk)");
+  // screen.println("30: 1 min (Buss)");
+
+  screen.println(tempResponse);
+  Serial.println(tempResponse);
 
   buttonState = digitalRead(buttonPin);
 
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if (buttonState == HIGH) {
+
+/*
     screen.fillScreen(ST7735_WHITE);
     screen.println("Pressed! TEST TESTING TEST TESTING TEST TESTING TEST TESTING");
     screen.println("Pressed! TEST TESTING TEST TESTING TEST TESTING TEST TESTING");
@@ -121,7 +130,10 @@ void loop() {
 
     // turn LED on:
     // digitalWrite(ledPin, HIGH);
+    */
   } else {
+
+    /*
     screen.fillScreen(ST7735_WHITE);
 
     // turn LED off:
@@ -130,6 +142,8 @@ void loop() {
     screen.println("Not pressed!");
 
     screen.println("Not pressed!");
+
+    */
 
 
   }
