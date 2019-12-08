@@ -15,6 +15,8 @@
 #define TFT_RST        A0
 Adafruit_ST7735 screen = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
+// #define TRAM_BLUE 0x3d93e8;
+
 // Button
 const int buttonPin = D5;
 int buttonState = 0;
@@ -114,6 +116,21 @@ void drawText(char *text, uint16_t color, int *textSize) {
   screen.print(text);
 }
 
+// TODO: Dynamic
+void drawLineNumber() {
+  int lineX = 2;
+  int lineY = 10;
+
+  // Ruter Red: d42c1f
+  // Ruter Blue: 3d93e8
+
+  screen.fillRect(lineX, lineY, 36, 24, 0x3d93e8);
+  screen.drawChar(lineX+8, lineY+4, '1', ST7735_BLACK, 0x3d93e8, 2);
+  screen.drawChar(lineX+18, lineY+4, '7', ST7735_BLACK, 0x3d93e8, 2);
+
+  buttonState = digitalRead(buttonPin);
+}
+
 void loop() {
   screen.setTextWrap(true);
   screen.setTextSize(2);
@@ -129,36 +146,12 @@ void loop() {
   screen.setTextColor(ST7735_BLACK);
   screen.println(tempResponse);
 
-  buttonState = digitalRead(buttonPin);
+  drawLineNumber();
 
   if (buttonState == HIGH) {
-
-    /*
-    screen.fillScreen(ST7735_WHITE);
-    screen.println("Pressed! TEST TESTING TEST TESTING TEST TESTING TEST TESTING");
-    screen.println("Pressed! TEST TESTING TEST TESTING TEST TESTING TEST TESTING");
-    screen.println("Pressed! TEST TESTING TEST TESTING TEST TESTING TEST TESTING");
-
-    // turn LED on:
-    // digitalWrite(ledPin, HIGH);
-    */
   } else {
-
-    /*
-    screen.fillScreen(ST7735_WHITE);
-
-    // turn LED off:
-    // digitalWrite(ledPin, LOW);
-    screen.println("Not pressed!");
-    screen.println("Not pressed!");
-
-    screen.println("Not pressed!");
-
-    */
-
-
   }
 
-  delay(1000);
+  delay(1500);
 
 }
