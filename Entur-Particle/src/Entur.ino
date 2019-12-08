@@ -8,6 +8,7 @@
 #include "Adafruit_ST7735/Adafruit_ST7735.h"
 #include "HttpClient/HttpClient.h"
 #include "ArduinoJson.h"
+#include "Adafruit_ST7735/fonts.h"
 
 // OLED Display
 #define TFT_CS         A2
@@ -37,7 +38,10 @@ const String HOSTNAME = "192.168.1.117";
 const int PORT = 3000;
 const String PATH = "/";
 
-String tempResponse;
+// TODO: Improve
+String line; // String, because it may contain letters like "11N"
+String destination;
+String timeUntil;
 
 
 void setup() {
@@ -95,31 +99,24 @@ void parseResponse(String response) {
   deserializeJson(doc, response.c_str());
 
   JsonObject root_0 = doc[0];
-  const char* timeUntilNext = root_0["timeUntilNext"]; // "17:49"
-  const char* estimatedDepartureDate = root_0["estimatedDepartureDate"]; // "2019-12-08T16:49:31.000Z"
-  const char* line = root_0["line"]; // "17"
-  const char* destination = root_0["destination"]; // "Rikshospitalet"
+  const char* rTimeUntilNext = root_0["timeUntilNext"]; // "17:49"
+  const char* rEstimatedDepartureDate = root_0["estimatedDepartureDate"]; // "2019-12-08T16:49:31.000Z"
+  const char* rLine = root_0["line"]; // "17"
+  const char* rDestination = root_0["destination"]; // "Rikshospitalet"
 
-  tempResponse = (String)"" + line + " " + destination + "(" + timeUntilNext + ")";
+  // tempResponse = (String)"" + line + " " + destination + "(" + timeUntilNext + ")";
 
-  Serial.println("What is this?");
-  Serial.print(root_0);
-  Serial.print(tempResponse);
+  line = rLine;
+  destination = rDestination;
+  timeUntil = rTimeUntilNext;
 
-}
 
-void drawText(char *text, uint16_t color, int *textSize) {
-  screen.setCursor(0, 0);
-  screen.setTextColor(color);
-  screen.setTextWrap(true);
-  // screen.setTextSize(textSize);
-  screen.print(text);
 }
 
 // TODO: Dynamic
 void drawLineNumber() {
   int lineX = 2;
-  int lineY = 10;
+  int lineY = 22;
 
   // Ruter Red: d42c1f
   // Ruter Blue: 3d93e8
@@ -129,6 +126,10 @@ void drawLineNumber() {
   screen.drawChar(lineX+18, lineY+4, '7', ST7735_BLACK, 0x3d93e8, 2);
 
   buttonState = digitalRead(buttonPin);
+}
+
+void drawDestination() {
+
 }
 
 void loop() {
@@ -142,16 +143,25 @@ void loop() {
   screen.println("NESTE TRIKK");
   screen.print("\n");
 
-  screen.setTextSize(2);
-  screen.setTextColor(ST7735_BLACK);
-  screen.println(tempResponse);
-
   drawLineNumber();
 
+  // Destination
+  screen.setTextSize(1);
+  screen.setCursor(46, 18);
+  screen.setTextColor(ST7735_BLACK);
+  screen.println(destination);
+
+// Time Until
+  screen.setTextSize(2);
+  screen.setCursor(46, 34);
+  screen.setTextColor(ST7735_BLACK);
+  screen.println(timeUntil);
+
   if (buttonState == HIGH) {
+
   } else {
   }
 
-  delay(1500);
+  delay(3000);
 
 }
