@@ -26,8 +26,8 @@ async function getLatestTimes() {
     const { line } = serviceJourney.journeyPattern;
 
     const departureTime = new Date(expectedDepartureTime);
-    const minDiff = minutesDifference(now, departureTime);
-    const departureLabel = minDiff < 15 ? `${minDiff} min` : toTimeString(departureTime);
+    const inMinutes = minutesDifference(now, departureTime);
+    const departureLabel = inMinutes < 20 ? `${inMinutes} min` : toTimeString(departureTime);
 
     const dep = {
       timeUntilNext: departureLabel,
@@ -60,16 +60,23 @@ function minutesDifference(date1, date2) {
 function toTimeString(date) {
   const hour = String(date.getHours()).padStart(2, '0');
   const minute = String(date.getMinutes()).padStart(2, '0');
+
+  if ((hour == 0) && (minute == 0)) {
+    return "Nå";
+  }
+
   return `${hour}:${minute}`;
 }
 
 
 app.get('/', async (req, res) => {
 
+  res.setHeader("Content-Type", "application/json");
+
   const times = await getLatestTimes();
   console.log(times);
 
-  res.send(times);
+  await res.json(times);
 
 });
 

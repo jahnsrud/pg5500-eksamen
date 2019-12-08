@@ -1,19 +1,18 @@
 /*
 * Project Entur
-* Description:
-* Author:
-* Date:
+* Description: Exam in PG5500: Embedded Systems
+* Author: 5016 - Markus Jahnsrud
+* Date: 2019-12-10
 */
 
 #include "Adafruit_ST7735/Adafruit_ST7735.h"
 #include "HttpClient/HttpClient.h"
 #include "ArduinoJson.h"
 
+// OLED Display
 #define TFT_CS         A2
 #define TFT_DC         A1
 #define TFT_RST        A0
-
-// OLED Display
 Adafruit_ST7735 screen = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
 // Button
@@ -25,8 +24,7 @@ HttpClient http;
 
 http_header_t headers[] = {
   { "Content-Type", "application/json" },
-  //  { "Accept" , "application/json" },
-  { "Accept" , "*/*"},
+  { "Accept" , "application/json" },
   { NULL, NULL } // NOTE: Always terminate headers will NULL
 };
 
@@ -65,7 +63,6 @@ void configureDisplay() {
 }
 
 void getRealtimeEstimate() {
-  Serial.println();
   Serial.println("Application>\tFetching...");
 
   // Request path and body can be set at runtime or at setup.
