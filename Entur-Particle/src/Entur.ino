@@ -115,17 +115,32 @@ void parseResponse(String response) {
 
 // TODO: Dynamic
 void drawLineNumber() {
-  int lineX = 2;
-  int lineY = 22;
 
+  // HEX:
   // Ruter Red: d42c1f
   // Ruter Blue: 3d93e8
 
-  screen.fillRect(lineX, lineY, 36, 24, 0x3d93e8);
-  screen.drawChar(lineX+8, lineY+4, '1', ST7735_BLACK, 0x3d93e8, 2);
-  screen.drawChar(lineX+18, lineY+4, '7', ST7735_BLACK, 0x3d93e8, 2);
+  // Arduino Colors that needs investigation:
+  // Ruter Red:
+  // Ruter Blue: 0x2bd3e0
 
-  buttonState = digitalRead(buttonPin);
+  // Row 1
+  int lineX = 0;
+  int lineY = 18;
+
+  screen.fillRect(lineX, lineY, 36, 24, 0x2bd3e0);
+  screen.drawChar(lineX+8, lineY+4, '1', ST7735_BLACK, 0x2bd3e0, 2);
+  screen.drawChar(lineX+18, lineY+4, '7', ST7735_BLACK, 0x2bd3e0, 2);
+
+  // Row 2
+  int r2LineX = 0;
+  int r2LineY = 50;
+
+  screen.fillRect(r2LineX, r2LineY, 36, 24, ST7735_CYAN);
+  screen.drawChar(r2LineX+8, r2LineY+4, '3', ST7735_BLACK, ST7735_CYAN, 2);
+  screen.drawChar(r2LineX+18, r2LineY+4, '0', ST7735_BLACK, ST7735_CYAN  , 2);
+
+
 }
 
 void drawDestination() {
@@ -133,30 +148,55 @@ void drawDestination() {
 }
 
 void loop() {
-  screen.setTextWrap(true);
-  screen.setTextSize(2);
-  screen.setCursor(0, 0);
-  screen.setTextColor(ST7735_BLACK);
 
+  screen.setCursor(0, 0);
+
+  screen.setCursor(0, 2);
   screen.setTextSize(1);
-  screen.setTextColor(ST7735_BLUE);
+  screen.setTextColor(0xd42c1f);
   screen.println("NESTE TRIKK");
   screen.print("\n");
 
   drawLineNumber();
 
+  ////////
+  // ROW 1
+  ////////
+
   // Destination
   screen.setTextSize(1);
-  screen.setCursor(46, 18);
+  screen.setCursor(46, 16);
   screen.setTextColor(ST7735_BLACK);
   screen.println(destination);
 
-// Time Until
+  // Time Until
   screen.setTextSize(2);
-  screen.setCursor(46, 34);
+  screen.setCursor(46, 28);
   screen.setTextColor(ST7735_BLACK);
   screen.println(timeUntil);
 
+  ////////
+  // ROW 2
+  ////////
+
+  // Destination
+  screen.setTextSize(1);
+  screen.setCursor(46, 48);
+  screen.setTextColor(ST7735_BLACK);
+  screen.println("COMING_SOON");
+
+  // Time Until
+  screen.setTextSize(2);
+  screen.setCursor(46, 60);
+  screen.setTextColor(ST7735_BLACK);
+  screen.println("LATER");
+
+
+  ////////
+  // Coming soon
+  ////////
+
+  buttonState = digitalRead(buttonPin);
   if (buttonState == HIGH) {
 
   } else {
