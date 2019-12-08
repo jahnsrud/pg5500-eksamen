@@ -114,7 +114,7 @@ void loop() {
   // screen.println("17: 0 min (Trikk)");
   // screen.println("30: 1 min (Buss)");
 
-  screen.println(tempResponse);
+  //screen.println(tempResponse);
   Serial.println(tempResponse);
 
   buttonState = digitalRead(buttonPin);
