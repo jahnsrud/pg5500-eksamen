@@ -27,7 +27,7 @@ async function getLatestTimes() {
 
     const departureTime = new Date(expectedDepartureTime);
     const inMinutes = minutesDifference(now, departureTime);
-    const departureLabel = inMinutes < 20 ? `${inMinutes} min` : toTimeString(departureTime);
+    const departureLabel = inMinutes > 0 ? `${inMinutes} min` : toTimeString(departureTime);
 
     const dep = {
       timeUntilNext: departureLabel,
@@ -61,7 +61,7 @@ function toTimeString(date) {
   const hour = String(date.getHours()).padStart(2, '0');
   const minute = String(date.getMinutes()).padStart(2, '0');
 
-  if ((hour == 0) && (minute == 0)) {
+  if ((hour === "0") && (minute === "0")) {
     return "Nå";
   }
 

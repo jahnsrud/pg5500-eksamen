@@ -14,9 +14,12 @@
 #define TFT_CS         A2
 #define TFT_DC         A1
 #define TFT_RST        A0
-Adafruit_ST7735 screen = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
-// #define TRAM_BLUE 0x3d93e8;
+#define TRAM_BLUE      0x2bd3e0
+#define BUS_RED        0x07FF
+#define HEADLINE_COLOR 0xd42c1f
+
+Adafruit_ST7735 screen = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
 // Button
 const int buttonPin = D5;
@@ -104,8 +107,6 @@ void parseResponse(String response) {
   const char* rLine = root_0["line"]; // "17"
   const char* rDestination = root_0["destination"]; // "Rikshospitalet"
 
-  // tempResponse = (String)"" + line + " " + destination + "(" + timeUntilNext + ")";
-
   line = rLine;
   destination = rDestination;
   timeUntil = rTimeUntilNext;
@@ -128,17 +129,17 @@ void drawLineNumber() {
   int lineX = 0;
   int lineY = 18;
 
-  screen.fillRect(lineX, lineY, 36, 24, 0x2bd3e0);
-  screen.drawChar(lineX+8, lineY+4, '1', ST7735_BLACK, 0x2bd3e0, 2);
-  screen.drawChar(lineX+18, lineY+4, '7', ST7735_BLACK, 0x2bd3e0, 2);
+  screen.fillRect(lineX, lineY, 36, 24, TRAM_BLUE);
+  screen.drawChar(lineX+8, lineY+4, '1', ST7735_BLACK, TRAM_BLUE, 2);
+  screen.drawChar(lineX+18, lineY+4, '7', ST7735_BLACK, TRAM_BLUE, 2);
 
   // Row 2
   int r2LineX = 0;
   int r2LineY = 50;
 
-  screen.fillRect(r2LineX, r2LineY, 36, 24, ST7735_CYAN);
-  screen.drawChar(r2LineX+8, r2LineY+4, '3', ST7735_BLACK, ST7735_CYAN, 2);
-  screen.drawChar(r2LineX+18, r2LineY+4, '0', ST7735_BLACK, ST7735_CYAN  , 2);
+  screen.fillRect(r2LineX, r2LineY, 36, 24, BUS_RED);
+  screen.drawChar(r2LineX+8, r2LineY+4, '3', ST7735_BLACK, BUS_RED, 2);
+  screen.drawChar(r2LineX+18, r2LineY+4, '0', ST7735_BLACK, BUS_RED  , 2);
 
 
 }
@@ -153,7 +154,7 @@ void loop() {
 
   screen.setCursor(0, 2);
   screen.setTextSize(1);
-  screen.setTextColor(0xd42c1f);
+  screen.setTextColor(HEADLINE_COLOR);
   screen.println("NESTE TRIKK");
   screen.print("\n");
 
