@@ -7,6 +7,7 @@
 
 #include "Adafruit_ST7735/Adafruit_ST7735.h"
 #include "HttpClient/HttpClient.h"
+#include "ArduinoJson-v6.13.0.h"
 
 #define TFT_CS         A2
 #define TFT_DC         A1
@@ -23,7 +24,7 @@ int buttonState = 0;
 HttpClient http;
 
 http_header_t headers[] = {
-  //  { "Content-Type", "application/json" },
+  { "Content-Type", "application/json" },
   //  { "Accept" , "application/json" },
   { "Accept" , "*/*"},
   { NULL, NULL } // NOTE: Always terminate headers will NULL
@@ -31,6 +32,10 @@ http_header_t headers[] = {
 
 http_request_t request;
 http_response_t response;
+
+const String HOSTNAME = "192.168.1.117";
+const String PORT = "3000";
+const String PATH = "/";
 
 String tempResponse;
 
@@ -72,11 +77,9 @@ void getRealtimeEstimate() {
   Serial.println();
   Serial.println("Application>\tStart of Loop.");
   // Request path and body can be set at runtime or at setup.
-  request.hostname = "192.168.1.117";
-  request.port = 3000;
-  request.path = "/";
-
-  // https://jsonplaceholder.typicode.com/posts/1
+  request.hostname = HOSTNAME;
+  request.port = PORT;
+  request.path = PATH;
 
   // The library also supports sending a body with your request:
   //request.body = "{\"key\":\"value\"}";
@@ -91,6 +94,13 @@ void getRealtimeEstimate() {
 
   tempResponse = response.body;
 
+}
+
+void parseResponse() {
+  // Allocate the JSON document
+  // Use arduinojson.org/v6/assistant to compute the capacity.
+  const size_t capacity = JSON_OBJECT_SIZE(3) + JSON_ARRAY_SIZE(2) + 60;
+  DynamicJsonDocument doc(capacity);
 
 }
 
@@ -122,7 +132,7 @@ void loop() {
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if (buttonState == HIGH) {
 
-/*
+    /*
     screen.fillScreen(ST7735_WHITE);
     screen.println("Pressed! TEST TESTING TEST TESTING TEST TESTING TEST TESTING");
     screen.println("Pressed! TEST TESTING TEST TESTING TEST TESTING TEST TESTING");
@@ -151,81 +161,3 @@ void loop() {
   delay(500);
 
 }
-
-
-/*
-
-// This #include statement was automatically added by the Particle IDE.
-#include <HttpClient.h>
-
-#define RED_LED    D1
-#define GREEN_LED  D2
-#define BLUE_LED   D4
-#define BUTTON_PIN D3
-
-#define WIFI_SSID "SSID"
-#define WIFI_PASS "password"
-
-void initWifi();
-char* getWifiStatusStr(int stat);
-
-void blink(int ledpin, int timeON = 250, int timeOFF = 250);
-void blinkAll(int times = 1, int timeON = 100, int timeOFF = 100);
-
-void setup() {
-pinMode(RED_LED,   OUTPUT);
-pinMode(BLUE_LED,  OUTPUT);
-pinMode(GREEN_LED, OUTPUT);
-pinMode(BUTTON_PIN,INPUT_PULLUP);
-blinkAll(3, 150,150);
-
-Serial.begin(9600);
-initWifi();
-}
-
-char* ENTUR_HOST  = "api.entur.io";
-char* ENTUR_URL   = "journey-planner/v2/graphql/";
-char* GRAPHQL_REQ = "?query=%7B%0A%20%20stopPlace(id%3A%20\"NSR%3AStopPlace%3A6219\")%20%7B%0A%20%20%20%20id%0A%20%20%20%20name%0A%20%20%20%20estimatedCalls(timeRange%3A%205000%2C%20numberOfDepartures%3A%204%2C%20whiteListed%3A%20%7Blines%3A%20\"RUT%3ALine%3A76\"%7D)%20%7B%0A%20%20%20%20%20%20realtime%0A%20%20%20%20%20%20expectedArrivalTime%0A%20%20%20%20%20%20expectedDepartureTime%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A";
-
-void enturTest(){
-blink(BLUE_LED);
-WiFiClient client;
-
-Serial.printf("\n[Connecting to %s ... ", ENTUR_HOST);
-if (client.connect(ENTUR_HOST, 80))
-{
-Serial.println("connected]");
-blink(GREEN_LED);
-
-String address = String(ENTUR_HOST) + "/" + String(ENTUR_URL);
-Serial.printf("address : %s\n", &address[0]);
-Serial.printf("post req: %s\n", GRAPHQL_REQ);
-
-HTTPClient http;
-http.begin(address);
-
-http.addHeader("Content-Type",  "application/json");
-//http.addHeader("Content-Type",  "application/x-www-form-urlencoded");
-http.addHeader("ET-Client-Name","id-id"); //required from the EnTur API docs
-
-int    httpCode = http.POST(GRAPHQL_REQ);
-String payload  = http.getString();
-
-Serial.println(httpCode);
-Serial.println(payload);
-http.end();
-
-Serial.println("\n[Disconnected]");
-}
-else{
-Serial.println("connected]");
-blink(RED_LED);
-}
-}
-
-void loop() {
-if(digitalRead(BUTTON_PIN) == LOW){
-enturTest();
-}
-delay(10);
-}*/

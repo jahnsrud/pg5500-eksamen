@@ -12,7 +12,7 @@ paired with a hardware-specific library for each display device we carry
 
 Adafruit invests time and resources providing this open source code, please
 support Adafruit & open-source hardware by purchasing products from Adafruit!
- 
+
 Copyright (c) 2013 Adafruit Industries.  All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -138,7 +138,7 @@ void Adafruit_GFX::drawCircle(int16_t x0, int16_t y0, int16_t r,
     x++;
     ddF_x += 2;
     f += ddF_x;
-  
+
     drawPixel(x0 + x, y0 + y, color);
     drawPixel(x0 - x, y0 + y, color);
     drawPixel(x0 + x, y0 - y, color);
@@ -170,7 +170,7 @@ void Adafruit_GFX::drawCircleHelper( int16_t x0, int16_t y0,
     if (cornername & 0x4) {
       drawPixel(x0 + x, y0 + y, color);
       drawPixel(x0 + y, y0 + x, color);
-    } 
+    }
     if (cornername & 0x2) {
       drawPixel(x0 + x, y0 - y, color);
       drawPixel(x0 + y, y0 - x, color);
@@ -229,13 +229,13 @@ void Adafruit_GFX::drawLine(int16_t x0, int16_t y0,
 			    uint16_t color) {
   int16_t steep = abs(y1 - y0) > abs(x1 - x0);
   if (steep) {
-    swap(x0, y0);
-    swap(x1, y1);
+    gfxSwap(x0, y0);
+    gfxSwap(x1, y1);
   }
 
   if (x0 > x1) {
-    swap(x0, x1);
-    swap(y0, y1);
+    gfxSwap(x0, x1);
+    gfxSwap(y0, y1);
   }
 
   int16_t dx, dy;
@@ -343,13 +343,13 @@ void Adafruit_GFX::fillTriangle ( int16_t x0, int16_t y0,
 
   // Sort coordinates by Y order (y2 >= y1 >= y0)
   if (y0 > y1) {
-    swap(y0, y1); swap(x0, x1);
+    gfxSwap(y0, y1); gfxSwap(x0, x1);
   }
   if (y1 > y2) {
-    swap(y2, y1); swap(x2, x1);
+    gfxSwap(y2, y1); gfxSwap(x2, x1);
   }
   if (y0 > y1) {
-    swap(y0, y1); swap(x0, x1);
+    gfxSwap(y0, y1); gfxSwap(x0, x1);
   }
 
   if(y0 == y2) { // Handle awkward all-on-same-line case as its own thing
@@ -390,7 +390,7 @@ void Adafruit_GFX::fillTriangle ( int16_t x0, int16_t y0,
     a = x0 + (x1 - x0) * (y - y0) / (y1 - y0);
     b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
     */
-    if(a > b) swap(a,b);
+    if(a > b) gfxSwap(a,b);
     drawFastHLine(a, y, b-a+1, color);
   }
 
@@ -407,7 +407,7 @@ void Adafruit_GFX::fillTriangle ( int16_t x0, int16_t y0,
     a = x1 + (x2 - x1) * (y - y1) / (y2 - y1);
     b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
     */
-    if(a > b) swap(a,b);
+    if(a > b) gfxSwap(a,b);
     drawFastHLine(a, y, b-a+1, color);
   }
 }
@@ -428,7 +428,7 @@ void Adafruit_GFX::drawBitmap(int16_t x, int16_t y,
 }
 
 size_t Adafruit_GFX::write(uint8_t c) {
-  
+
   if (c == '\n') {
     cursor_y += textsize*fontDesc[0].height;	//all chars are same height so use height of space char
     cursor_x  = 0;
@@ -466,7 +466,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
   else {
     c -= fontStart;
   }
- 
+
   if((x >= _width)            || // Clip right
      (y >= _height)           || // Clip bottom
      ((x + (fontDesc[c].width * size) - 1) < 0) || // Clip left
@@ -475,7 +475,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
 
 	uint8_t bitCount=0;
   	uint16_t fontIndex = fontDesc[c].offset + 2; //((fontDesc + c)->offset) + 2;
-  
+
   for (int8_t i=0; i<fontDesc[c].height; i++ ) {	// i<fontHeight
     uint8_t line;
     for (int8_t j = 0; j<fontDesc[c].width; j++) {			//j<fontWidth
@@ -488,7 +488,7 @@ void Adafruit_GFX::drawChar(int16_t x, int16_t y, unsigned char c,
           }
         else {  // big size
           fillRect(x+(j*size), y+(i*size), size, size, color);
-        } 
+        }
       } else if (bg != color) {
         if (size == 1) // default size
           drawPixel(x+j, y+i, bg);
@@ -512,14 +512,14 @@ void Adafruit_GFX::setTextSize(uint8_t s) {
 }
 
 void Adafruit_GFX::setTextColor(uint16_t c) {
-  // For 'transparent' background, we'll set the bg 
+  // For 'transparent' background, we'll set the bg
   // to the same as fg instead of using a flag
   textcolor = textbgcolor = c;
 }
 
 void Adafruit_GFX::setTextColor(uint16_t c, uint16_t b) {
   textcolor   = c;
-  textbgcolor = b; 
+  textbgcolor = b;
 }
 
 void Adafruit_GFX::setTextWrap(boolean w) {
@@ -550,7 +550,7 @@ void Adafruit_GFX::setRotation(uint8_t x) {
 int16_t Adafruit_GFX::width(void) {
   return _width;
 }
- 
+
 int16_t Adafruit_GFX::height(void) {
   return _height;
 }

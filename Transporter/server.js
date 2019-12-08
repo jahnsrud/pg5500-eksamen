@@ -3,22 +3,20 @@ const express = require('express');
 
 const app = express();
 const port = 3000;
+const now = new Date();
 
 const entur = new EnturService({ clientName: 'student-hk' });
 const primaryStopPlaceId = "NSR:StopPlace:62031"; // Heimdalsgata
 const secondaryStopPlaceId = "NSR:StopPlace:59675"; // Herslebs Gate
 
-const now = new Date();
-
 async function getLatestTimes() {
-
-  // Fix:
-  // const departures = await entur.getStopPlaceDepartures([primaryStopPlaceId, secondaryStopPlaceId]);
 
   const params = {
     departures: 2
   };
 
+  // Try:
+  // const departures = await entur.getStopPlaceDepartures([primaryStopPlaceId, secondaryStopPlaceId], params);
   const departures = await entur.getStopPlaceDepartures(primaryStopPlaceId, params);
 
   const foundDepartures = [];
