@@ -84,7 +84,7 @@ void getRealtimeEstimate() {
 }
 
 void parseResponse(String response) {
-  
+
   // Allocate the JSON document
   // Use arduinojson.org/v6/assistant to compute the capacity.
   const size_t capacity = JSON_ARRAY_SIZE(2) + 2*JSON_OBJECT_SIZE(4) + 280;

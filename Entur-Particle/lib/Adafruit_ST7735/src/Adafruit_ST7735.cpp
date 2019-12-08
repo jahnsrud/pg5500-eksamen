@@ -498,24 +498,11 @@ void Adafruit_ST7735::initG(void) {
 void Adafruit_ST7735::initR(uint8_t options) {
   commonInit(Rcmd1);
 
-  colstart = 24;
-  rowstart = 0;
-
-  if(options == INITR_GREENTAB) {
-    commandList(Rcmd2green);
-    colstart = 24;
-    rowstart = 0;
-  } else {
-    // colstart, rowstart left at default '0' values
-    commandList(Rcmd2red);
-  }
+  commandList(Rcmd2green);
+  colstart = 1;
+  rowstart = 26;
+  writedata(0xC0);
   commandList(Rcmd3);
-
-  // if black, change MADCTL color filter
-  if (options == INITR_BLACKTAB) {
-    writecommand(ST7735_MADCTL);
-    writedata(0xC0);
-  }
 
   tabcolor = options;
 }
