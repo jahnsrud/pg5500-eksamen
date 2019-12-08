@@ -5,12 +5,21 @@ const app = express();
 const port = 3000;
 
 const entur = new EnturService({ clientName: 'student-hk' });
-const stopPlaceId = "NSR:StopPlace:62031"; // Heimdalsgata
+const primaryStopPlaceId = "NSR:StopPlace:62031"; // Heimdalsgata
+const secondaryStopPlaceId = "NSR:StopPlace:59675"; // Herslebs Gate
+
 const now = new Date();
 
 async function getLatestTimes() {
 
-  const departures = await entur.getStopPlaceDepartures(stopPlaceId);
+  // Fix:
+  // const departures = await entur.getStopPlaceDepartures([primaryStopPlaceId, secondaryStopPlaceId]);
+
+  const params = {
+    departures: 2
+  };
+
+  const departures = await entur.getStopPlaceDepartures(primaryStopPlaceId, params);
 
   const foundDepartures = [];
 
@@ -22,12 +31,16 @@ async function getLatestTimes() {
     const minDiff = minutesDifference(now, departureTime);
     const departureLabel = minDiff < 15 ? `${minDiff} min` : toTimeString(departureTime);
 
-    const departureString = `${line.transportMode} ${line.publicCode} ${destinationDisplay.frontText} ${departureLabel} ${departureTime}`;
+    const dep = {
+      timeUntilNext: departureLabel,
+      estimatedDepartureDate: departureTime,
+      line: line.publicCode,
+      destination: destinationDisplay.frontText
+    };
 
-    console.log(departureString);
+    console.log(dep);
 
-    // TODO: Improve drastically
-    foundDepartures.push(departureString);
+    foundDepartures.push(dep);
 
   });
 
@@ -55,9 +68,7 @@ function toTimeString(date) {
 
 app.get('/', async (req, res) => {
 
-  console.log('Fetching...');
   const times = await getLatestTimes();
-  console.log('What is times?');
   console.log(times);
 
   res.send(times);
