@@ -7,7 +7,7 @@
 
 #include "Adafruit_ST7735/Adafruit_ST7735.h"
 #include "HttpClient/HttpClient.h"
-#include "ArduinoJson-v6.13.0.h"
+#include "ArduinoJson.h"
 
 #define TFT_CS         A2
 #define TFT_DC         A1
@@ -34,7 +34,7 @@ http_request_t request;
 http_response_t response;
 
 const String HOSTNAME = "192.168.1.117";
-const String PORT = "3000";
+const int PORT = 3000;
 const String PATH = "/";
 
 String tempResponse;
@@ -64,18 +64,10 @@ void configureDisplay() {
 
 }
 
-
-void drawText(char *text, uint16_t color, int *textSize) {
-  screen.setCursor(0, 0);
-  screen.setTextColor(color);
-  screen.setTextWrap(true);
-  // screen.setTextSize(textSize);
-  screen.print(text);
-}
-
 void getRealtimeEstimate() {
   Serial.println();
-  Serial.println("Application>\tStart of Loop.");
+  Serial.println("Application>\tFetching...");
+
   // Request path and body can be set at runtime or at setup.
   request.hostname = HOSTNAME;
   request.port = PORT;
@@ -86,22 +78,45 @@ void getRealtimeEstimate() {
 
   // Get request
   http.get(request, response, headers);
+
   Serial.print("Application>\tResponse status: ");
   Serial.println(response.status);
 
   Serial.print("Application>\tHTTP Response Body: ");
   Serial.println(response.body);
 
-  tempResponse = response.body;
+  parseResponse(response.body);
 
 }
 
-void parseResponse() {
+void parseResponse(String response) {
   // Allocate the JSON document
   // Use arduinojson.org/v6/assistant to compute the capacity.
-  const size_t capacity = JSON_OBJECT_SIZE(3) + JSON_ARRAY_SIZE(2) + 60;
+  const size_t capacity = JSON_ARRAY_SIZE(2) + 2*JSON_OBJECT_SIZE(4) + 280;
   DynamicJsonDocument doc(capacity);
 
+  deserializeJson(doc, response.c_str());
+
+  JsonObject root_0 = doc[0];
+  const char* timeUntilNext = root_0["timeUntilNext"]; // "17:49"
+  const char* estimatedDepartureDate = root_0["estimatedDepartureDate"]; // "2019-12-08T16:49:31.000Z"
+  const char* line = root_0["line"]; // "17"
+  const char* destination = root_0["destination"]; // "Rikshospitalet"
+
+  tempResponse = (String)"" + line + " " + destination + "(" + timeUntilNext + ")";
+
+  Serial.println("What is this?");
+  Serial.print(root_0);
+  Serial.print(tempResponse);
+
+}
+
+void drawText(char *text, uint16_t color, int *textSize) {
+  screen.setCursor(0, 0);
+  screen.setTextColor(color);
+  screen.setTextWrap(true);
+  // screen.setTextSize(textSize);
+  screen.print(text);
 }
 
 void loop() {
@@ -120,16 +135,12 @@ void loop() {
   // screen.drawPixel(0, screen.height()/2, ST7735_GREEN);
 
 
-  screen.println("@markus testing something");
-  // screen.println("17: 0 min (Trikk)");
-  // screen.println("30: 1 min (Buss)");
+  screen.println("NESTE TRIKK");
 
-  //screen.println(tempResponse);
-  Serial.println(tempResponse);
+  screen.println(tempResponse);
 
   buttonState = digitalRead(buttonPin);
 
-  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if (buttonState == HIGH) {
 
     /*
