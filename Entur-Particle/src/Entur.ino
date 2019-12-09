@@ -10,20 +10,13 @@
 #include "ArduinoJson.h"
 #include "Adafruit_ST7735/fonts.h"
 #include "Departure.h"
+#include "Colors.h"
+#include "API.h"
 
 // OLED Display
 #define TFT_CS         A2
 #define TFT_DC         A1
 #define TFT_RST        A0
-
-
-// HEX:
-// Ruter Red: d42c1f
-// Ruter Blue: 3d93e8
-
-#define TRAM_BLUE      0x2bd3e0
-#define BUS_RED        0x07FF
-#define HEADLINE_COLOR 0xd42c1f
 
 Adafruit_ST7735 screen = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
@@ -43,11 +36,6 @@ http_header_t headers[] = {
 http_request_t request;
 http_response_t response;
 
-const String HOSTNAME = "192.168.1.117";
-const int PORT = 3000;
-const String PATH = "/";
-
-// TODO: Improve
 Departure firstDeparture;
 Departure secondDeparture;
 
@@ -131,32 +119,28 @@ void parseResponse(String response) {
 
 void drawLineNumber(int row, String lineNumber) {
 
-  if (row == 0) {
+  int lineColor;
 
-    // Row 1
-    int lineX = 0;
-    int lineY = 18;
-
-    screen.fillRect(lineX, lineY, 36, 24, TRAM_BLUE);
-    screen.drawChar(lineX+8, lineY+4, lineNumber[0], ST7735_BLACK, TRAM_BLUE, 2);
-    screen.drawChar(lineX+18, lineY+4, lineNumber[1], ST7735_BLACK, TRAM_BLUE, 2);
-
-  } else if (row == 1) {
-
-    // Row 2
-    int r2LineX = 0;
-    int r2LineY = 50;
-
-    screen.fillRect(r2LineX, r2LineY, 36, 24, BUS_RED);
-    screen.drawChar(r2LineX+8, r2LineY+4, lineNumber[0], ST7735_BLACK, BUS_RED, 2);
-    screen.drawChar(r2LineX+18, r2LineY+4, lineNumber[1], ST7735_BLACK, BUS_RED  , 2);
-
+  if (lineNumber == "17") {
+    lineColor = TRAM_BLUE;
+  } else if (lineNumber == "30") {
+    lineColor = BUS_RED;
   }
 
+  int lineX = 0;
+  int lineY = 0;
 
-}
+  // Set cordinates for rows
+  if (row == 0) {
+    lineY = 18;
+  } else if (row == 1) {
+    lineY = 50;
+  }
 
-void drawDestination() {
+  screen.fillRect(lineX, lineY, 36, 24, lineColor);
+  screen.drawChar(lineX+8, lineY+4, lineNumber[0], ST7735_BLACK, lineColor, 2);
+  screen.drawChar(lineX+18, lineY+4, lineNumber[1], ST7735_BLACK, lineColor, 2);
+
 
 }
 
