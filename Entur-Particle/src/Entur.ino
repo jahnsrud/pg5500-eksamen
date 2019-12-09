@@ -111,7 +111,7 @@ void parseResponse(String response) {
 
   // Add the 4 results to the departures array.
 
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 4; i++) {
     JsonObject jsonDeparture = doc[i];
 
     const char* rTimeUntilNext = jsonDeparture["timeUntilNext"]; // "17:49"
