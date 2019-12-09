@@ -30,7 +30,7 @@ HttpClient http;
 http_header_t headers[] = {
   { "Content-Type", "application/json" },
   { "Accept" , "application/json" },
-  { NULL, NULL } // NOTE: Always terminate headers will NULL
+  { NULL, NULL } // Terminate headers with NULL
 };
 
 http_request_t request;
@@ -39,13 +39,12 @@ http_response_t response;
 Departure firstDeparture;
 Departure secondDeparture;
 
-
 void setup() {
 
   Serial.begin (9600);
   Serial.println("Hello, Kristiania!");
-  configureDisplay();
 
+  configureDisplay();
   pinMode(buttonPin, INPUT);
 
   getRealtimeEstimate();
@@ -61,27 +60,38 @@ void configureDisplay() {
 
   // Clear the display
   screen.fillScreen(ST7735_WHITE);
+  
+  screen.setTextWrap(false);
+
 
 }
 
 void getRealtimeEstimate() {
   Serial.println("Application>\tFetching...");
 
-  // Request path and body can be set at runtime or at setup.
   request.hostname = HOSTNAME;
   request.port = PORT;
   request.path = PATH;
 
-  // Get request
+  // GET request to our server
   http.get(request, response, headers);
 
-  Serial.print("Application>\tResponse status: ");
+  Serial.print("Response status: ");
   Serial.println(response.status);
 
-  Serial.print("Application>\tHTTP Response Body: ");
-  Serial.println(response.body);
+  // Only proceed if status code is 200
+  if (response.status == 200) {
+    Serial.println("All good!");
+    parseResponse(response.body);
 
-  parseResponse(response.body);
+  } else {
+    drawHeadline("Error. Retrying...");
+    delay(4000);
+    screen.fillScreen(ST7735_WHITE);
+    getRealtimeEstimate();
+
+  }
+
 
 }
 
@@ -114,6 +124,27 @@ void parseResponse(String response) {
   secondDeparture.line = rLine1;
   secondDeparture.destination = rDestination1;
   secondDeparture.timeUntil = rTimeUntilNext1;
+
+  drawDisplay();
+
+}
+
+void drawDisplay() {
+  drawHeadline("NESTE TRIKK");
+
+  ////////
+  // ROW 1
+  ////////
+
+  drawLineNumber(0, firstDeparture.line.c_str());
+  drawDeparture(0, firstDeparture.destination, firstDeparture.timeUntil);
+
+  ////////
+  // ROW 2
+  ////////
+
+  drawLineNumber(1, secondDeparture.line);
+  drawDeparture(1, secondDeparture.destination, secondDeparture.timeUntil);
 
 }
 
@@ -191,21 +222,6 @@ void loop() {
   screen.setCursor(0, 0);
   screen.setTextWrap(false);
 
-  drawHeadline("NESTE TRIKK");
-
-  ////////
-  // ROW 1
-  ////////
-
-  drawLineNumber(0, firstDeparture.line.c_str());
-  drawDeparture(0, firstDeparture.destination, firstDeparture.timeUntil);
-
-  ////////
-  // ROW 2
-  ////////
-
-  drawLineNumber(1, secondDeparture.line);
-  drawDeparture(1, secondDeparture.destination, secondDeparture.timeUntil);
 
 
   ////////

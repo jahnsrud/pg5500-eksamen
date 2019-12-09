@@ -5,13 +5,15 @@ const app = express();
 const port = 3000;
 
 const entur = new EnturService({ clientName: 'student-hk' });
+
 const primaryStopPlaceId = "NSR:StopPlace:62031"; // Heimdalsgata
 const secondaryStopPlaceId = "NSR:StopPlace:59675"; // Herslebs Gate
+const numberOfDepartures = 1; // Only get one department from each direction
 
 async function getLatestTimes() {
 
   const params = {
-    departures: 2
+    departures: numberOfDepartures
   };
 
   const departures = await entur.getStopPlaceDepartures([primaryStopPlaceId, secondaryStopPlaceId], params);
@@ -23,7 +25,7 @@ async function getLatestTimes() {
 
   const foundDepartures = [];
 
-  secondaryDepartures.forEach((departure) => {
+  allDepartures.forEach((departure) => {
     const { expectedDepartureTime, destinationDisplay, serviceJourney } = departure;
     const { line } = serviceJourney.journeyPattern;
 
