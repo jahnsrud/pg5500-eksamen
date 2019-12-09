@@ -98,9 +98,10 @@ void getRealtimeEstimate() {
 
 void parseResponse(String response) {
 
-  // Allocate the JSON document
-  // Use arduinojson.org/v6/assistant to compute the capacity.
-  const size_t capacity = JSON_ARRAY_SIZE(2) + 2*JSON_OBJECT_SIZE(4) + 280;
+  // From Documentation: Allocate the JSON document
+  // arduinojson.org/v6/assistant is incredibly useful for calculating the capacity variable
+
+  const size_t capacity = JSON_ARRAY_SIZE(4) + 4*JSON_OBJECT_SIZE(4) + 550;
   DynamicJsonDocument doc(capacity);
 
   deserializeJson(doc, response.c_str());
@@ -139,12 +140,12 @@ void drawTable() {
   if (departureTablePage == 0) {
     dep1 = departures[0];
     dep2 = departures[1];
-    drawHeadline("HEIMDALSGATA");
+    drawHeadline("HEIMDALSGATA (1/2)");
 
   } else {
     dep1 = departures[2];
     dep2 = departures[3];
-    drawHeadline("HERSLEBS GATE");
+    drawHeadline("HERSLEBS GATE (2/2)");
 
   }
 
@@ -249,6 +250,7 @@ void changePage() {
 
 void loop() {
 
+  // TODO: skjule?
   screen.setCursor(0, 0);
   screen.setTextWrap(false);
 
