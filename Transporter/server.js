@@ -2,7 +2,7 @@ import EnturService from '@entur/sdk';
 const express = require('express');
 
 const app = express();
-const port = 80;
+const port = 8080;
 
 const entur = new EnturService({ clientName: 'student-hk' });
 
