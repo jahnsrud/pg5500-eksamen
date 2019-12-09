@@ -37,8 +37,10 @@ http_request_t request;
 http_response_t response;
 
 Departure departures[3];
-
 int departureTablePage = 0;
+
+#define UPDATE_IN_SECONDS 20;
+int refreshInSeconds = UPDATE_IN_SECONDS;
 
 void setup() {
 
@@ -101,7 +103,7 @@ void parseResponse(String response) {
   // From Documentation: Allocate the JSON document
   // arduinojson.org/v6/assistant is incredibly useful for calculating the capacity variable
 
-  const size_t capacity = JSON_ARRAY_SIZE(4) + 4*JSON_OBJECT_SIZE(4) + 550;
+  const size_t capacity = JSON_ARRAY_SIZE(4) + 4*JSON_OBJECT_SIZE(4) + 560;
   DynamicJsonDocument doc(capacity);
 
   deserializeJson(doc, response.c_str());
@@ -123,7 +125,6 @@ void parseResponse(String response) {
     departure.timeUntil = rTimeUntilNext;
 
     departures[i] = departure;
-
 
   }
 
@@ -171,7 +172,7 @@ void drawTable() {
 
 void drawLineNumber(int row, String lineNumber) {
 
-  int lineColor;
+  int lineColor = HEADLINE_COLOR;
 
   if (lineNumber == "17") {
     lineColor = TRAM_BLUE;
@@ -248,15 +249,26 @@ void changePage() {
   drawTable();
 }
 
+void refresh() {
+  screen.fillScreen(ST7735_WHITE);
+  getRealtimeEstimate();
+
+}
+
 void loop() {
 
-  // TODO: skjule?
+  /*
+  Skjule denne?
+  */
   screen.setCursor(0, 0);
   screen.setTextWrap(false);
 
-  ////////
-  // Coming soon
-  ////////
+  refreshInSeconds--;
+
+  if (refreshInSeconds == 0) {
+    refresh();
+    refreshInSeconds = UPDATE_IN_SECONDS;
+  }
 
   buttonState = digitalRead(buttonPin);
   if (buttonState == HIGH) {
