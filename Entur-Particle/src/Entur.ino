@@ -36,8 +36,7 @@ http_header_t headers[] = {
 http_request_t request;
 http_response_t response;
 
-Departure firstDeparture;
-Departure secondDeparture;
+Departure departures[3];
 
 void setup() {
 
@@ -60,7 +59,7 @@ void configureDisplay() {
 
   // Clear the display
   screen.fillScreen(ST7735_WHITE);
-  
+
   screen.setTextWrap(false);
 
 
@@ -110,10 +109,6 @@ void parseResponse(String response) {
   const char* rLine = root_0["line"]; // "17"
   const char* rDestination = root_0["destination"]; // "Rikshospitalet"
 
-  firstDeparture.line = rLine;
-  firstDeparture.destination = rDestination;
-  firstDeparture.timeUntil = rTimeUntilNext;
-
   // OBS: DENNE MÅ FIKSES
   JsonObject root_1 = doc[1];
   const char* rTimeUntilNext1 = root_1["timeUntilNext"]; // "17:49"
@@ -121,9 +116,25 @@ void parseResponse(String response) {
   const char* rLine1 = root_1["line"]; // "17"
   const char* rDestination1 = root_1["destination"]; // "Rikshospitalet"
 
-  secondDeparture.line = rLine1;
-  secondDeparture.destination = rDestination1;
-  secondDeparture.timeUntil = rTimeUntilNext1;
+    // TODO: MAJOR FIX!
+
+  // FOR LOOP, takk!
+
+  Departure departure1;
+  departure1.line = rLine;
+  departure1.destination = rDestination;
+  departure1.timeUntil = rTimeUntilNext;
+
+  departures[0] = departure1;
+
+  // FOR LOOP, takk!
+
+  Departure departure2;
+  departure2.line = rLine1;
+  departure2.destination = rDestination1;
+  departure2.timeUntil = rTimeUntilNext1;
+
+  departures[1] = departure2;
 
   drawDisplay();
 
@@ -136,15 +147,15 @@ void drawDisplay() {
   // ROW 1
   ////////
 
-  drawLineNumber(0, firstDeparture.line.c_str());
-  drawDeparture(0, firstDeparture.destination, firstDeparture.timeUntil);
+  drawLineNumber(0, departures[0].line.c_str());
+  drawDeparture(0, departures[0].destination, departures[0].timeUntil);
 
   ////////
   // ROW 2
   ////////
 
-  drawLineNumber(1, secondDeparture.line);
-  drawDeparture(1, secondDeparture.destination, secondDeparture.timeUntil);
+  drawLineNumber(1, departures[1].line);
+  drawDeparture(1, departures[1].destination, departures[1].timeUntil);
 
 }
 
