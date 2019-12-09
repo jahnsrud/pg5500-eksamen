@@ -117,6 +117,10 @@ void parseResponse(String response) {
 
 }
 
+/**
+* Draws line numbers with a background color
+*/
+
 void drawLineNumber(int row, String lineNumber) {
 
   int lineColor;
@@ -144,54 +148,64 @@ void drawLineNumber(int row, String lineNumber) {
 
 }
 
+void drawDeparture(int row, String destination, String timeUntil) {
+
+  int baselineX = 46;
+
+  int destinationY = 16;
+  int timeUntilY = 0;
+
+  if (row == 0) {
+    destinationY = 16;
+    timeUntilY = 28;
+  } else if (row == 1) {
+    destinationY = 48;
+    timeUntilY = 60;
+
+  }
+
+  // Destination
+  screen.setTextSize(1);
+  screen.setCursor(baselineX, destinationY);
+  screen.setTextColor(ST7735_BLACK);
+  screen.println(destination);
+
+  // Time Until
+  screen.setTextSize(2);
+  screen.setCursor(baselineX, timeUntilY);
+  screen.setTextColor(ST7735_BLACK);
+  screen.println(timeUntil);
+
+}
+
+void drawHeadline(String headline) {
+  screen.setCursor(0, 2);
+  screen.setTextSize(1);
+  screen.setTextColor(HEADLINE_COLOR);
+  screen.println(headline);
+  screen.print("\n");
+}
+
 void loop() {
 
   screen.setCursor(0, 0);
   screen.setTextWrap(false);
 
-  screen.setCursor(0, 2);
-  screen.setTextSize(1);
-  screen.setTextColor(HEADLINE_COLOR);
-  screen.println("NESTE TRIKK");
-  screen.print("\n");
+  drawHeadline("NESTE TRIKK");
 
   ////////
   // ROW 1
   ////////
 
-  // Line Number
   drawLineNumber(0, firstDeparture.line.c_str());
-
-  // Destination
-  screen.setTextSize(1);
-  screen.setCursor(46, 16);
-  screen.setTextColor(ST7735_BLACK);
-  screen.println(firstDeparture.destination);
-
-  // Time Until
-  screen.setTextSize(2);
-  screen.setCursor(46, 28);
-  screen.setTextColor(ST7735_BLACK);
-  screen.println(firstDeparture.timeUntil);
+  drawDeparture(0, firstDeparture.destination, firstDeparture.timeUntil);
 
   ////////
   // ROW 2
   ////////
 
-  // Line Number
   drawLineNumber(1, secondDeparture.line);
-
-  // Destination
-  screen.setTextSize(1);
-  screen.setCursor(46, 48);
-  screen.setTextColor(ST7735_BLACK);
-  screen.println(secondDeparture.destination);
-
-  // Time Until
-  screen.setTextSize(2);
-  screen.setCursor(46, 60);
-  screen.setTextColor(ST7735_BLACK);
-  screen.println(secondDeparture.timeUntil);
+  drawDeparture(1, secondDeparture.destination, secondDeparture.timeUntil);
 
 
   ////////
@@ -202,8 +216,9 @@ void loop() {
   if (buttonState == HIGH) {
 
   } else {
+
   }
 
-  delay(3000);
+  delay(2500);
 
 }

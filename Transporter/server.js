@@ -23,7 +23,7 @@ async function getLatestTimes() {
 
   const foundDepartures = [];
 
-  allDepartures.forEach((departure) => {
+  secondaryDepartures.forEach((departure) => {
     const { expectedDepartureTime, destinationDisplay, serviceJourney } = departure;
     const { line } = serviceJourney.journeyPattern;
 
