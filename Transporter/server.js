@@ -86,6 +86,6 @@ app.get('/', async (req, res) => {
 
 });
 
-app.listen(port, () => console.log(`Listening on ${port}`));
+app.listen(process.env.PORT, () => console.log(`Listening on ${process.env.PORT}`));
 
 module.exports = app;
