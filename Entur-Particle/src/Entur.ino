@@ -16,6 +16,11 @@
 #define TFT_DC         A1
 #define TFT_RST        A0
 
+
+// HEX:
+// Ruter Red: d42c1f
+// Ruter Blue: 3d93e8
+
 #define TRAM_BLUE      0x2bd3e0
 #define BUS_RED        0x07FF
 #define HEADLINE_COLOR 0xd42c1f
@@ -124,32 +129,29 @@ void parseResponse(String response) {
 
 }
 
-// TODO: Dynamic
-void drawLineNumber() {
+void drawLineNumber(int row, String lineNumber) {
 
-  // HEX:
-  // Ruter Red: d42c1f
-  // Ruter Blue: 3d93e8
+  if (row == 0) {
 
-  // Arduino Colors that needs investigation:
-  // Ruter Red:
-  // Ruter Blue: 0x2bd3e0
+    // Row 1
+    int lineX = 0;
+    int lineY = 18;
 
-  // Row 1
-  int lineX = 0;
-  int lineY = 18;
+    screen.fillRect(lineX, lineY, 36, 24, TRAM_BLUE);
+    screen.drawChar(lineX+8, lineY+4, lineNumber[0], ST7735_BLACK, TRAM_BLUE, 2);
+    screen.drawChar(lineX+18, lineY+4, lineNumber[1], ST7735_BLACK, TRAM_BLUE, 2);
 
-  screen.fillRect(lineX, lineY, 36, 24, TRAM_BLUE);
-  screen.drawChar(lineX+8, lineY+4, '1', ST7735_BLACK, TRAM_BLUE, 2);
-  screen.drawChar(lineX+18, lineY+4, '7', ST7735_BLACK, TRAM_BLUE, 2);
+  } else if (row == 1) {
 
-  // Row 2
-  int r2LineX = 0;
-  int r2LineY = 50;
+    // Row 2
+    int r2LineX = 0;
+    int r2LineY = 50;
 
-  screen.fillRect(r2LineX, r2LineY, 36, 24, BUS_RED);
-  screen.drawChar(r2LineX+8, r2LineY+4, '3', ST7735_BLACK, BUS_RED, 2);
-  screen.drawChar(r2LineX+18, r2LineY+4, '0', ST7735_BLACK, BUS_RED  , 2);
+    screen.fillRect(r2LineX, r2LineY, 36, 24, BUS_RED);
+    screen.drawChar(r2LineX+8, r2LineY+4, lineNumber[0], ST7735_BLACK, BUS_RED, 2);
+    screen.drawChar(r2LineX+18, r2LineY+4, lineNumber[1], ST7735_BLACK, BUS_RED  , 2);
+
+  }
 
 
 }
@@ -169,11 +171,12 @@ void loop() {
   screen.println("NESTE TRIKK");
   screen.print("\n");
 
-  drawLineNumber();
-
   ////////
   // ROW 1
   ////////
+
+  // Line Number
+  drawLineNumber(0, firstDeparture.line.c_str());
 
   // Destination
   screen.setTextSize(1);
@@ -190,6 +193,9 @@ void loop() {
   ////////
   // ROW 2
   ////////
+
+  // Line Number
+  drawLineNumber(1, secondDeparture.line);
 
   // Destination
   screen.setTextSize(1);
