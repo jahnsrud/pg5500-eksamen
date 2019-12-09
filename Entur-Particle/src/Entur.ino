@@ -74,7 +74,7 @@ void getRealtimeEstimate() {
   Serial.println("Application>\tFetching...");
 
   request.hostname = HOSTNAME;
-  request.port = PORT;
+  // request.port = PORT;
   request.path = PATH;
 
   // GET request to our server

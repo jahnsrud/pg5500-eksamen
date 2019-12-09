@@ -1,3 +1,3 @@
-const String HOSTNAME = "192.168.1.117";
+const String HOSTNAME = "lit-mountain-15065.herokuapp.com";
 const int PORT = 80;
 const String PATH = "/";
