@@ -36,7 +36,8 @@ http_header_t headers[] = {
 http_request_t request;
 http_response_t response;
 
-Departure departures[3];
+// Departures
+Departure departures[4];
 int departureTablePage = 0;
 
 #define UPDATE_IN_SECONDS 20;
@@ -154,15 +155,51 @@ void drawTable() {
   // ROW 1
   ////////
 
-  drawLineNumber(0, dep1.line);
-  drawDeparture(0, dep1.destination, dep1.timeUntil);
+  drawDeparture(0, dep1.destination, dep1.timeUntil, dep1.line);
 
   ////////
   // ROW 2
   ////////
 
-  drawLineNumber(1, dep2.line);
-  drawDeparture(1, dep2.destination, dep2.timeUntil);
+  drawDeparture(1, dep2.destination, dep2.timeUntil, dep2.line);
+
+}
+
+void drawDeparture(int row, String destination, String timeUntil, String lineNumber) {
+
+  // Set coordinates for our table rows.
+  // The table supports only 2 rows at a time.
+
+  int baselineX = 46;
+
+  int destinationY = 16;
+  int timeUntilY = 0;
+
+  if (row == 0) {
+    destinationY = 16;
+    timeUntilY = 28;
+  } else if (row == 1) {
+    destinationY = 48;
+    timeUntilY = 60;
+
+  }
+
+  // Line number (for example 17 or 30)
+  drawLineNumber(row, lineNumber);
+
+  // Destination
+  screen.setTextSize(1);
+  screen.setCursor(baselineX, destinationY);
+  screen.setTextColor(ST7735_BLACK);
+  screen.println(destination);
+
+  // Time Until label
+  screen.setTextSize(2);
+  screen.setCursor(baselineX, timeUntilY);
+  screen.setTextColor(ST7735_BLACK);
+  screen.println(timeUntil);
+
+
 
 }
 
@@ -197,36 +234,6 @@ void drawLineNumber(int row, String lineNumber) {
 
 }
 
-void drawDeparture(int row, String destination, String timeUntil) {
-
-  int baselineX = 46;
-
-  int destinationY = 16;
-  int timeUntilY = 0;
-
-  if (row == 0) {
-    destinationY = 16;
-    timeUntilY = 28;
-  } else if (row == 1) {
-    destinationY = 48;
-    timeUntilY = 60;
-
-  }
-
-  // Destination
-  screen.setTextSize(1);
-  screen.setCursor(baselineX, destinationY);
-  screen.setTextColor(ST7735_BLACK);
-  screen.println(destination);
-
-  // Time Until
-  screen.setTextSize(2);
-  screen.setCursor(baselineX, timeUntilY);
-  screen.setTextColor(ST7735_BLACK);
-  screen.println(timeUntil);
-
-}
-
 void drawHeadline(String headline) {
   screen.setCursor(0, 2);
   screen.setTextSize(1);
@@ -257,12 +264,6 @@ void refresh() {
 
 void loop() {
 
-  /*
-  Skjule denne?
-  */
-  screen.setCursor(0, 0);
-  screen.setTextWrap(false);
-
   refreshInSeconds--;
 
   if (refreshInSeconds == 0) {
@@ -273,9 +274,6 @@ void loop() {
   buttonState = digitalRead(buttonPin);
   if (buttonState == HIGH) {
     changePage();
-
-  } else {
-
   }
 
   delay(1000);
