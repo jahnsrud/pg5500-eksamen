@@ -8,7 +8,7 @@ const entur = new EnturService({ clientName: 'student-hk' });
 
 const primaryStopPlaceId = "NSR:StopPlace:62031"; // Heimdalsgata
 const secondaryStopPlaceId = "NSR:StopPlace:59675"; // Herslebs Gate
-const numberOfDepartures = 1; // Only get one department from each direction
+const numberOfDepartures = 2; // Only get one department from each direction
 
 async function getLatestTimes() {
 

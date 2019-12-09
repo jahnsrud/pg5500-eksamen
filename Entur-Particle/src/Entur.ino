@@ -38,6 +38,8 @@ http_response_t response;
 
 Departure departures[3];
 
+int departureTablePage = 0;
+
 void setup() {
 
   Serial.begin (9600);
@@ -129,26 +131,41 @@ void parseResponse(String response) {
 }
 
 void drawTable() {
-  drawHeadline("NESTE AVGANG");
+
+  // Prepare Data for our table
+  Departure dep1;
+  Departure dep2;
+
+  if (departureTablePage == 0) {
+    dep1 = departures[0];
+    dep2 = departures[1];
+    drawHeadline("HEIMDALSGATA");
+
+  } else {
+    dep1 = departures[2];
+    dep2 = departures[3];
+    drawHeadline("HERSLEBS GATE");
+
+  }
 
   ////////
   // ROW 1
   ////////
 
-  drawLineNumber(0, departures[0].line.c_str());
-  drawDeparture(0, departures[0].destination, departures[0].timeUntil);
+  drawLineNumber(0, dep1.line);
+  drawDeparture(0, dep1.destination, dep1.timeUntil);
 
   ////////
   // ROW 2
   ////////
 
-  drawLineNumber(1, departures[1].line);
-  drawDeparture(1, departures[1].destination, departures[1].timeUntil);
+  drawLineNumber(1, dep2.line);
+  drawDeparture(1, dep2.destination, dep2.timeUntil);
 
 }
 
 /**
-* Draws line numbers with a background color
+* Draws tram/bus line numbers with a background color
 */
 
 void drawLineNumber(int row, String lineNumber) {
@@ -216,6 +233,20 @@ void drawHeadline(String headline) {
   screen.print("\n");
 }
 
+void changePage() {
+
+  // Clear the table first
+  screen.fillScreen(ST7735_WHITE);
+
+  if (departureTablePage == 0) {
+    departureTablePage = 1;
+  } else {
+    departureTablePage = 0;
+  }
+
+  drawTable();
+}
+
 void loop() {
 
   screen.setCursor(0, 0);
@@ -227,6 +258,7 @@ void loop() {
 
   buttonState = digitalRead(buttonPin);
   if (buttonState == HIGH) {
+    changePage();
 
   } else {
 
