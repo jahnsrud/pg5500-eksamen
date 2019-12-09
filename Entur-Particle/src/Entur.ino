@@ -103,45 +103,33 @@ void parseResponse(String response) {
 
   deserializeJson(doc, response.c_str());
 
-  JsonObject root_0 = doc[0];
-  const char* rTimeUntilNext = root_0["timeUntilNext"]; // "17:49"
-  const char* rEstimatedDepartureDate = root_0["estimatedDepartureDate"]; // "2019-12-08T16:49:31.000Z"
-  const char* rLine = root_0["line"]; // "17"
-  const char* rDestination = root_0["destination"]; // "Rikshospitalet"
+  // Add the 4 results to the departures array.
 
-  // OBS: DENNE MÅ FIKSES
-  JsonObject root_1 = doc[1];
-  const char* rTimeUntilNext1 = root_1["timeUntilNext"]; // "17:49"
-  const char* rEstimatedDepartureDate1 = root_1["estimatedDepartureDate"]; // "2019-12-08T16:49:31.000Z"
-  const char* rLine1 = root_1["line"]; // "17"
-  const char* rDestination1 = root_1["destination"]; // "Rikshospitalet"
+  for (int i = 0; i < 3; i++) {
+    JsonObject jsonDeparture = doc[i];
 
-    // TODO: MAJOR FIX!
+    const char* rTimeUntilNext = jsonDeparture["timeUntilNext"]; // "17:49"
+    const char* rEstimatedDepartureDate = jsonDeparture["estimatedDepartureDate"]; // "2019-12-08T16:49:31.000Z"
+    const char* rLine = jsonDeparture["line"]; // "17"
+    const char* rDestination = jsonDeparture["destination"]; // "Rikshospitalet"
 
-  // FOR LOOP, takk!
+    // Convert to Departure
+    Departure departure;
+    departure.line = rLine;
+    departure.destination = rDestination;
+    departure.timeUntil = rTimeUntilNext;
 
-  Departure departure1;
-  departure1.line = rLine;
-  departure1.destination = rDestination;
-  departure1.timeUntil = rTimeUntilNext;
+    departures[i] = departure;
 
-  departures[0] = departure1;
 
-  // FOR LOOP, takk!
+  }
 
-  Departure departure2;
-  departure2.line = rLine1;
-  departure2.destination = rDestination1;
-  departure2.timeUntil = rTimeUntilNext1;
-
-  departures[1] = departure2;
-
-  drawDisplay();
+  drawTable();
 
 }
 
-void drawDisplay() {
-  drawHeadline("NESTE TRIKK");
+void drawTable() {
+  drawHeadline("NESTE AVGANG");
 
   ////////
   // ROW 1
@@ -233,8 +221,6 @@ void loop() {
   screen.setCursor(0, 0);
   screen.setTextWrap(false);
 
-
-
   ////////
   // Coming soon
   ////////
@@ -246,6 +232,6 @@ void loop() {
 
   }
 
-  delay(2500);
+  delay(1000);
 
 }
