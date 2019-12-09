@@ -3,7 +3,6 @@ const express = require('express');
 
 const app = express();
 const port = 3000;
-const now = new Date();
 
 const entur = new EnturService({ clientName: 'student-hk' });
 const primaryStopPlaceId = "NSR:StopPlace:62031"; // Heimdalsgata
@@ -15,15 +14,20 @@ async function getLatestTimes() {
     departures: 2
   };
 
-  // Try:
-  // const departures = await entur.getStopPlaceDepartures([primaryStopPlaceId, secondaryStopPlaceId], params);
-  const departures = await entur.getStopPlaceDepartures(primaryStopPlaceId, params);
+  const departures = await entur.getStopPlaceDepartures([primaryStopPlaceId, secondaryStopPlaceId], params);
+
+  const primaryDepartures = departures[0].departures;
+  const secondaryDepartures = departures[1].departures;
+
+  const allDepartures = primaryDepartures.concat(secondaryDepartures);
 
   const foundDepartures = [];
 
-  departures.forEach((departure) => {
+  allDepartures.forEach((departure) => {
     const { expectedDepartureTime, destinationDisplay, serviceJourney } = departure;
     const { line } = serviceJourney.journeyPattern;
+
+    const now = new Date();
 
     const departureTime = new Date(expectedDepartureTime);
     const inMinutes = minutesDifference(now, departureTime);

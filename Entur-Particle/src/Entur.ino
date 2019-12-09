@@ -9,6 +9,7 @@
 #include "HttpClient/HttpClient.h"
 #include "ArduinoJson.h"
 #include "Adafruit_ST7735/fonts.h"
+#include "Departure.h"
 
 // OLED Display
 #define TFT_CS         A2
@@ -42,9 +43,8 @@ const int PORT = 3000;
 const String PATH = "/";
 
 // TODO: Improve
-String line; // String, because it may contain letters like "11N"
-String destination;
-String timeUntil;
+Departure firstDeparture;
+Departure secondDeparture;
 
 
 void setup() {
@@ -107,10 +107,20 @@ void parseResponse(String response) {
   const char* rLine = root_0["line"]; // "17"
   const char* rDestination = root_0["destination"]; // "Rikshospitalet"
 
-  line = rLine;
-  destination = rDestination;
-  timeUntil = rTimeUntilNext;
+  firstDeparture.line = rLine;
+  firstDeparture.destination = rDestination;
+  firstDeparture.timeUntil = rTimeUntilNext;
 
+  // OBS: DENNE MÅ FIKSES
+  JsonObject root_1 = doc[1];
+  const char* rTimeUntilNext1 = root_1["timeUntilNext"]; // "17:49"
+  const char* rEstimatedDepartureDate1 = root_1["estimatedDepartureDate"]; // "2019-12-08T16:49:31.000Z"
+  const char* rLine1 = root_1["line"]; // "17"
+  const char* rDestination1 = root_1["destination"]; // "Rikshospitalet"
+
+  secondDeparture.line = rLine1;
+  secondDeparture.destination = rDestination1;
+  secondDeparture.timeUntil = rTimeUntilNext1;
 
 }
 
@@ -151,6 +161,7 @@ void drawDestination() {
 void loop() {
 
   screen.setCursor(0, 0);
+  screen.setTextWrap(false);
 
   screen.setCursor(0, 2);
   screen.setTextSize(1);
@@ -168,13 +179,13 @@ void loop() {
   screen.setTextSize(1);
   screen.setCursor(46, 16);
   screen.setTextColor(ST7735_BLACK);
-  screen.println(destination);
+  screen.println(firstDeparture.destination);
 
   // Time Until
   screen.setTextSize(2);
   screen.setCursor(46, 28);
   screen.setTextColor(ST7735_BLACK);
-  screen.println(timeUntil);
+  screen.println(firstDeparture.timeUntil);
 
   ////////
   // ROW 2
@@ -184,13 +195,13 @@ void loop() {
   screen.setTextSize(1);
   screen.setCursor(46, 48);
   screen.setTextColor(ST7735_BLACK);
-  screen.println("COMING_SOON");
+  screen.println(secondDeparture.destination);
 
   // Time Until
   screen.setTextSize(2);
   screen.setCursor(46, 60);
   screen.setTextColor(ST7735_BLACK);
-  screen.println("LATER");
+  screen.println(secondDeparture.timeUntil);
 
 
   ////////
