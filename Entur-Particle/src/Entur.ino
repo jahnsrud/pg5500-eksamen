@@ -51,6 +51,8 @@ void setup() {
   configureDisplay();
   pinMode(buttonPin, INPUT);
 
+  showSplashScreen();
+
   getRealtimeEstimate();
 }
 
@@ -68,6 +70,19 @@ void configureDisplay() {
   screen.setTextWrap(false);
 
 
+}
+
+void showSplashScreen() {
+    screen.fillRect(40, 18, 80, 40, TRAM_BLUE);
+
+    screen.setCursor(51, 33);
+    screen.setTextSize(1);
+    screen.setTextColor(ST7735_BLACK);
+    screen.println("Velkommen!");
+
+    delay(2000);
+
+    screen.fillScreen(ST7735_WHITE);
 }
 
 void getRealtimeEstimate() {
