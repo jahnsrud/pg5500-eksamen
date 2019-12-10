@@ -33,7 +33,15 @@ async function getLatestTimes() {
 
     const departureTime = new Date(expectedDepartureTime);
     const inMinutes = minutesDifference(now, departureTime);
-    const departureLabel = inMinutes > 0 ? `${inMinutes} min` : toTimeString(departureTime);
+    let departureLabel;
+
+    if (inMinutes === 0) {
+      departureLabel = "Ankommer...";
+    } else if (inMinutes > 0) {
+      departureLabel = `${inMinutes} min`;
+    } else {
+      departureLabel = toTimeString(departureTime);
+    }
 
     const dep = {
       timeUntilNext: departureLabel,
