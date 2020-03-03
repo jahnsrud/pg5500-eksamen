@@ -9,7 +9,7 @@ Particle Photon som kun viser data.
 
 ## 📽 Video
 
-[Åpne i YouTube](https://studio.youtube.com/video/JrGix3qBXH0/edit)
+[Åpne i YouTube](https://www.youtube.com/watch?v=JrGix3qBXH0)
 ![Bilde](https://user-images.githubusercontent.com/4276097/75101049-b9e4d280-55a4-11ea-89af-8a9b5e06c4f6.png)
 
 ## Kobling
